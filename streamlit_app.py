@@ -5,12 +5,12 @@ import sqlite3
 import streamlit as st
 import altair as alt
 import pandas as pd
-
+from supabase import create_client, Client
 
 # Set the title and favicon that appear in the Browser's tab bar.
 st.set_page_config(
-    page_title="Inventory tracker",
-    page_icon=":shopping_bags:",  # This is an emoji shortcode. Could be a URL too.
+    page_title="OnlyOne Fair Score Board",
+    page_icon="📊",  # This is an emoji shortcode. Could be a URL too.🥇🏆🎖️
 )
 
 
@@ -28,6 +28,17 @@ def connect_db():
     db_was_just_created = not db_already_exists
 
     return conn, db_was_just_created
+
+def connect_supabase():
+    # Supabase 프로젝트의 URL과 키를 여기에 입력하세요
+    SUPABASE_URL = "https://mvqxuteltnxhbwvgxzlb.supabase.co"
+    SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im12cXh1dGVsdG54aGJ3dmd4emxiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjM0NTkxNDMsImV4cCI6MjAzOTAzNTE0M30.NIYa3m8HA_31Fjgzr52IScmUjA1o-uEW1V7uU_DW2Pw"
+
+    # Supabase 클라이언트 생성
+    supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+
+    # Supabase 클라이언트 반환
+    return supabase
 
 
 def initialize_data(conn):
@@ -88,6 +99,59 @@ def initialize_data(conn):
         """
     )
     conn.commit()
+
+# 쿼리 : TOP 10 rank
+def load_data_(supabase):
+    """Loads the inventory data from the Supabase database."""
+
+    try:
+        # Score_Info 테이블에서 데이터 쿼리
+        query = """
+                SELECT A.id
+                     , SUM(SCORE) AS score
+                     , RANK() OVER (ORDER BY SUM(SCORE) DESC) AS rank
+                     , (SELECT name FROM "Peer_Info" B WHERE B.id = A.id) name
+                  FROM "Score_Info" A
+                 GROUP BY A.id
+                 ORDER BY SUM(SCORE) DESC
+                 LIMIT 10
+               """
+
+        # Supabase의 SQL 기능을 사용해 쿼리 실행
+        response = supabase.rpc('execute_top10_ranker', {'query': query}).execute()
+
+        # 응답에서 데이터 추출
+        data = response.data
+
+        if not data:
+            return None
+
+        # Pandas DataFrame으로 변환
+        df = pd.DataFrame(
+            data,
+            columns=[
+                "id",
+                "score",
+                "rank",
+                "name",
+            ],
+        )
+        # df = df.astype({
+        #     "id": "int64",  # id는 보통 정수형
+        #     "TOTAL_SCORE": "float64",  # TOTAL_SCORE는 real에 해당, 즉 부동소수점형
+        #     "name": "object",  # name은 varchar에 해당, 문자열 데이터
+        #     "company": "object",  # company도 varchar에 해당, 문자열 데이터
+        #     "ROOM_SCORE": "float64",  # ROOM_SCORE는 real에 해당, 즉 부동소수점형
+        #     "QUIZ_SCORE": "float64",  # QUIZ_SCORE는 real에 해당, 즉 부동소수점형
+        #     "PHOTO_SCORE": "float64",  # PHOTO_SCORE는 real에 해당, 즉 부동소수점형
+        #     "SURVEY_SCORE": "float64"  # SURVEY_SCORE는 real에 해당, 즉 부동소수점형
+        # })
+
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return None
+
+    return df
 
 
 def load_data(conn):
@@ -171,7 +235,7 @@ def update_data(conn, df, changes):
 
 # Set the title that appears at the top of the page.
 """
-# :shopping_bags: Inventory tracker
+# 📊Only One Fair Scoreboard 🔢
 
 **Welcome to Alice's Corner Store's intentory tracker!**
 This page reads and writes directly from/to our inventory database.
@@ -186,6 +250,7 @@ st.info(
 
 # Connect to database and create table if needed
 conn, db_was_just_created = connect_db()
+supabase = connect_supabase()
 
 # Initialize data.
 if db_was_just_created:
@@ -194,6 +259,22 @@ if db_was_just_created:
 
 # Load data from database
 df = load_data(conn)
+df_ = load_data_(supabase)
+
+
+# -----------------------------------------------------------------------------
+
+st.subheader("🏆️TOP 10 RANK 하고잡이🎖", divider="orange")
+
+""
+""
+
+# 차트 : TOP 10 Ranker
+# Altair 막대 차트 생성
+st.altair_chart(alt.Chart(df_)
+                .mark_bar(orient="horizontal", color='teal')
+                .encode(x=alt.X("score", title=None), y=alt.Y("name", title=None).sort("-x"))
+                .properties(width=600, height=300))
 
 # Display data with editable table
 edited_df = st.data_editor(
@@ -271,20 +352,3 @@ st.caption("NOTE: The :diamonds: location shows the reorder point.")
 ""
 ""
 ""
-
-# -----------------------------------------------------------------------------
-
-st.subheader("Best sellers", divider="orange")
-
-""
-""
-
-st.altair_chart(
-    alt.Chart(df)
-    .mark_bar(orient="horizontal")
-    .encode(
-        x="units_sold",
-        y=alt.Y("item_name").sort("-x"),
-    ),
-    use_container_width=True,
-)
