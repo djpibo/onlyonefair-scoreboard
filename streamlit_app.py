@@ -16,42 +16,16 @@ st.set_page_config(
         'About': None
 })
 
+hide_menu_style = """
+        <style>
+        #MainMenu {visibility: hidden;}
+        footer {visibility: hidden;}
+        </style>
+        """
+st.markdown(hide_menu_style, unsafe_allow_html=True)
+
 with open('styles.css') as f:
     st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
-
-# 폰트 파일 경로 (로컬)
-font_url_body_light = './font/CJ ONLYONE NEW body Light.ttf'
-font_url_body_regular = './font/CJ ONLYONE NEW body Regular.ttf'
-font_url_title_bold = './font/CJ ONLYONE NEW title Bold.ttf'
-font_url_title_medium = './font/CJ ONLYONE NEW title Medium.ttf'
-
-# HTML/CSS로 폰트 적용
-st.markdown(f"""
-    <style>
-        @font-face {{
-            font-family: 'CJFont_bl';
-            src: url('{font_url_body_light}');
-        }}
-        @font-face {{
-            font-family: 'CJFont_br';
-            src: url('{font_url_body_regular}');
-        }}
-        @font-face {{
-            font-family: 'CJFont_tb';
-            src: url('{font_url_title_bold}');
-        }}
-        @font-face {{
-            font-family: 'CJFont_tm';
-            src: url('{font_url_title_medium}');
-        }}
-        .custom-font {{
-            font-family: 'CJFont_bl', sans-serif;
-        }}
-        .stDataFrame {{
-            font-family: 'CJFont_bl', sans-serif;
-        }}
-    </style>
-""", unsafe_allow_html=True)
 
 # -----------------------------------------------------------------------------
 
@@ -224,25 +198,25 @@ with st.popover("이름으로 검색하기 👋"):
 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["순위", "전체", "클래스", "퀴즈", "미션", "대표작질문"])
 tab1_df = filtered_df[['이름', '소속사', '총점']]
 tab2_df = filtered_df[['이름', '소속사', '총점', '입실포인트', '퀴즈포인트', '미션포인트', '대표작질문포인트']]
-tab3_df = filtered_df[['이름', '소속사', '입실포인트cj', '입실포인트log', '입실포인트oy', '입실포인트enm', '입실포인트cms', '입실포인트ons']]
-tab3_df.rename(columns={
+_tab3_df = filtered_df[['이름', '소속사', '입실포인트cj', '입실포인트log', '입실포인트oy', '입실포인트enm', '입실포인트cms', '입실포인트ons']]
+tab3_df = _tab3_df.rename(columns={
     '입실포인트cj': 'CJ제일제당',
     '입실포인트log': 'CJ대한통운',
     '입실포인트oy': 'CJ올리브영',
     '입실포인트enm': 'CJ ENM 엔터',
     '입실포인트ons': 'CJ 올리브네트웍스',
     '입실포인트cms': 'CJ ENM 커머스',
-}, inplace=True)
-tab4_df = filtered_df[['이름', '소속사', '퀴즈포인트cj', '퀴즈포인트log', '퀴즈포인트oy', '퀴즈포인트enm', '퀴즈포인트cms', '퀴즈포인트ons']]
+})
+_tab4_df = filtered_df[['이름', '소속사', '퀴즈포인트cj', '퀴즈포인트log', '퀴즈포인트oy', '퀴즈포인트enm', '퀴즈포인트cms', '퀴즈포인트ons']]
 
-tab4_df.rename(columns={
+tab4_df = _tab4_df.rename(columns={
     '퀴즈포인트cj': 'CJ제일제당',
     '퀴즈포인트log': 'CJ대한통운',
     '퀴즈포인트oy': 'CJ올리브영',
     '퀴즈포인트enm': 'CJ ENM 엔터',
     '퀴즈포인트ons': 'CJ 올리브네트웍스',
     '퀴즈포인트cms': 'CJ ENM 커머스',
-}, inplace=True)
+})
 tab5_df = filtered_df[['이름', '소속사', '미션포인트']]
 tab6_df = filtered_df[['이름', '소속사', '대표작질문포인트']]
 
