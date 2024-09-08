@@ -9,7 +9,12 @@ from supabase import create_client, Client
 st.set_page_config(
     page_title="ONLYONE FAIR Score Board",
     page_icon="🏆",  # This is an emoji shortcode. Could be a URL too.🥇🏆🎖️
-)
+    layout="wide",
+    menu_items={
+        'Get Help': None,
+        'Report a bug': None,
+        'About': None
+})
 
 with open('styles.css') as f:
     st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
