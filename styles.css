@@ -1,0 +1,13 @@
+@font-face {
+    font-family: 'MyCustomFont';
+    src: url('./font/CJ\ ONLYONE\ NEW\ body\ Regular.ttf') format('truetype');
+    font-family: 'CJFont_tb';
+    src: url('./font/CJ\ ONLYONE\ NEW\ title\ Bold.ttf');
+}
+
+body {
+    font-family: 'MyCustomFont', sans-serif;
+}
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'CJFont_tb', sans-serif;
+}
