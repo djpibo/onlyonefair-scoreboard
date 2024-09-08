@@ -49,7 +49,6 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 # -----------------------------------------------------------------------------
-# Declare some useful functions.
 
 def connect_supabase():
     # Supabase 프로젝트의 URL과 키를 여기에 입력하세요

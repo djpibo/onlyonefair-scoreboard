@@ -1,20 +1,4 @@
-# 🛍️ Inventory tracker template
+# 📊 24년 CJ ONLYONE FAIR 실시간 포인트 확인 
 
-A Streamlit app showing how to use `st.data_editor` to read and modify a database. Behind the scenes
-this uses a simple SQLite database, but you can easily replace it with whatever your favorite DB is.
-
-[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://inventory-tracker-template.streamlit.app/)
-
-### How to run it on your own machine
-
-1. Install the requirements
-
-   ```
-   $ pip install -r requirements.txt
-   ```
-
-2. Run the app
-
-   ```
-   $ streamlit run streamlit_app.py
-   ```
+안녕하세요! 24년 CJ ONLYONE FAIR TF 이동주입니다. 클래스, 퀴즈, 미션 등을 통해 얻은 포인트를 확인할 수 있는 페이지입니다.
+하고잡이들의 순위와 클래스 입장 인원을 확인할 수 있습니다.
