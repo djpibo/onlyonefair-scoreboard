@@ -1,13 +1,8 @@
-from collections import defaultdict
-from pathlib import Path
-import numpy as np
 from datetime import datetime, timedelta
 import pytz
 
 import streamlit as st
-import altair as alt
 import pandas as pd
-import plotly.graph_objects as go
 from supabase import create_client, Client
 
 # Set the title and favicon that appear in the Browser's tab bar.
