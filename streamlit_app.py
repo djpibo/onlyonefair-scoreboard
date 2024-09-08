@@ -73,7 +73,25 @@ def load_data_s(supabase):
                         A.id,
                         SUM(A.SCORE) AS 총점,
                         SUM(CASE WHEN A.quiz_dvcd IN (3, 4) THEN A.SCORE ELSE 0 END) AS 입실포인트,
+                        SUM(CASE WHEN A.quiz_dvcd IN (3, 4) AND A.company_dvcd = 5 
+                        THEN A.SCORE ELSE 0 END) AS 입실포인트CJ,
+                        SUM(CASE WHEN A.quiz_dvcd IN (3, 4) AND A.company_dvcd = 6 
+                        THEN A.SCORE ELSE 0 END) AS 입실포인트LOG,
+                        SUM(CASE WHEN A.quiz_dvcd IN (3, 4) AND A.company_dvcd = 7
+                         THEN A.SCORE ELSE 0 END) AS 입실포인트OY,
+                        SUM(CASE WHEN A.quiz_dvcd IN (3, 4) AND A.company_dvcd = 8
+                         THEN A.SCORE ELSE 0 END) AS 입실포인트ENM,
+                        SUM(CASE WHEN A.quiz_dvcd IN (3, 4) AND A.company_dvcd = 9 
+                        THEN A.SCORE ELSE 0 END) AS 입실포인트ONS,
+                        SUM(CASE WHEN A.quiz_dvcd IN (3, 4) AND A.company_dvcd = 13 
+                        THEN A.SCORE ELSE 0 END) AS 입실포인트CMS,
                         SUM(CASE WHEN A.quiz_dvcd = 2 THEN A.SCORE ELSE 0 END) AS 퀴즈포인트,
+                        SUM(CASE WHEN A.quiz_dvcd = 2 AND A.company_dvcd = 5 THEN A.SCORE ELSE 0 END) AS 퀴즈포인트CJ,
+                        SUM(CASE WHEN A.quiz_dvcd = 2 AND A.company_dvcd = 6 THEN A.SCORE ELSE 0 END) AS 퀴즈포인트LOG,
+                        SUM(CASE WHEN A.quiz_dvcd = 2 AND A.company_dvcd = 7 THEN A.SCORE ELSE 0 END) AS 퀴즈포인트OY,
+                        SUM(CASE WHEN A.quiz_dvcd = 2 AND A.company_dvcd = 8 THEN A.SCORE ELSE 0 END) AS 퀴즈포인트ENM,
+                        SUM(CASE WHEN A.quiz_dvcd = 2 AND A.company_dvcd = 9 THEN A.SCORE ELSE 0 END) AS 퀴즈포인트ONS,
+                        SUM(CASE WHEN A.quiz_dvcd = 2 AND A.company_dvcd = 13 THEN A.SCORE ELSE 0 END) AS 퀴즈포인트CMS,
                         SUM(CASE WHEN A.quiz_dvcd = 14 THEN A.SCORE ELSE 0 END) AS 미션포인트,
                         SUM(CASE WHEN A.quiz_dvcd = 5 THEN A.SCORE ELSE 0 END) AS 대표작질문포인트
                     FROM "Score_Info" A
@@ -82,19 +100,28 @@ def load_data_s(supabase):
                 SELECT
                     S.id,
                     S.총점,
-                    RANK() OVER (ORDER BY S.총점 DESC) AS 순위,
                     P.name AS 이름,
                     P.company AS 소속사,
                     S.입실포인트,
+                    S.입실포인트CJ,
+                    S.입실포인트LOG,
+                    S.입실포인트OY,
+                    S.입실포인트ENM,
+                    S.입실포인트ONS,
+                    S.입실포인트CMS,
                     S.퀴즈포인트,
+                    S.퀴즈포인트CJ,
+                    S.퀴즈포인트LOG,
+                    S.퀴즈포인트OY,
+                    S.퀴즈포인트ENM,
+                    S.퀴즈포인트ONS,
+                    S.퀴즈포인트CMS,
                     S.미션포인트,
                     S.대표작질문포인트
                 FROM
                     Score_Summary S
                 JOIN
                     "Peer_Info" P ON S.id = P.id
-                ORDER BY
-                    S.총점 DESC
                """
 
         # Supabase의 SQL 기능을 사용해 쿼리 실행
@@ -105,17 +132,28 @@ def load_data_s(supabase):
 
         if not data:
             return None
-
+        
         # Pandas DataFrame으로 변환
         df = pd.DataFrame(data)
         df = df.astype({
                         'id': 'int64',
                         '총점': 'float64',
-                        '순위': 'int64',
                         '이름': 'str',
                         '소속사': 'str',
                         '입실포인트': 'float64',
+                        '입실포인트cj': 'float64',
+                        '입실포인트log': 'float64',
+                        '입실포인트oy': 'float64',
+                        '입실포인트enm': 'float64',
+                        '입실포인트ons': 'float64',
+                        '입실포인트cms': 'float64',
                         '퀴즈포인트': 'float64',
+                        '퀴즈포인트cj': 'float64',
+                        '퀴즈포인트log': 'float64',
+                        '퀴즈포인트oy': 'float64',
+                        '퀴즈포인트enm': 'float64',
+                        '퀴즈포인트ons': 'float64',
+                        '퀴즈포인트cms': 'float64',
                         '미션포인트': 'float64',
                         '대표작질문포인트': 'float64'
                     })
@@ -178,26 +216,45 @@ with st.popover("이름으로 검색하기 👋"):
     else:
         filtered_df = df_s
 
-
 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["순위", "전체", "클래스", "퀴즈", "미션", "대표작질문"])
-tab1_df = filtered_df.drop(columns=['입실포인트', '퀴즈포인트', '미션포인트', '대표작질문포인트'])
-tab2_df = filtered_df.drop(columns=['총점', '순위'])
+tab1_df = filtered_df[['이름', '소속사', '총점']]
+tab2_df = filtered_df[['이름', '소속사', '총점', '입실포인트', '퀴즈포인트', '미션포인트', '대표작질문포인트']]
+tab3_df = filtered_df[['이름', '소속사', '입실포인트cj', '입실포인트log', '입실포인트oy', '입실포인트enm', '입실포인트cms', '입실포인트ons']]
+tab3_df.rename(columns={
+    '입실포인트cj': 'CJ제일제당',
+    '입실포인트log': 'CJ대한통운',
+    '입실포인트oy': 'CJ올리브영',
+    '입실포인트enm': 'CJ ENM 엔터',
+    '입실포인트ons': 'CJ 올리브네트웍스',
+    '입실포인트cms': 'CJ ENM 커머스',
+}, inplace=True)
+tab4_df = filtered_df[['이름', '소속사', '퀴즈포인트cj', '퀴즈포인트log', '퀴즈포인트oy', '퀴즈포인트enm', '퀴즈포인트cms', '퀴즈포인트ons']]
+
+tab4_df.rename(columns={
+    '퀴즈포인트cj': 'CJ제일제당',
+    '퀴즈포인트log': 'CJ대한통운',
+    '퀴즈포인트oy': 'CJ올리브영',
+    '퀴즈포인트enm': 'CJ ENM 엔터',
+    '퀴즈포인트ons': 'CJ 올리브네트웍스',
+    '퀴즈포인트cms': 'CJ ENM 커머스',
+}, inplace=True)
+tab5_df = filtered_df[['이름', '소속사', '미션포인트']]
+tab6_df = filtered_df[['이름', '소속사', '대표작질문포인트']]
 
 with tab1:
      edited_df = st.data_editor(
         tab1_df,
         use_container_width=True,
+        #column_order=("순위","이름","소속사","총점"),
+        num_rows=20,
         column_config={
             "총점": st.column_config.ProgressColumn(
-                "총점",
                 format="%i",
                 min_value=0,
                 max_value=3000,
             ),
         },
         hide_index=True,
-        # Disable editing the ID and Date Submitted columns.
-        disabled=["ID", "Date Submitted"]
      )
 with tab2:
      edited_df = st.data_editor(
@@ -205,28 +262,24 @@ with tab2:
         use_container_width=True,
         column_config={
             "입실포인트": st.column_config.ProgressColumn(
-                "입실포인트",
                 help="체류시간에 따른 포인트입니다.",
                 format="%i",
                 min_value=0,
                 max_value=1260,
             ),
             "퀴즈포인트": st.column_config.ProgressColumn(
-                "퀴즈포인트",
                 help="클래스 퀴즈에 따른 포인트입니다.",
                 format="%i",
                 min_value=0,
                 max_value=300,
             ),
             "미션포인트": st.column_config.ProgressColumn(
-                "미션포인트",
                 help="디지털비전보드 포인트입니다.",
                 format="%i",
                 min_value=0,
                 max_value=200,
             ),
             "대표작질문포인트": st.column_config.ProgressColumn(
-                "대표작질문포인트",
                 help="대표작질문포인트에 따른 포인트입니다.",
                 format="%i",
                 min_value=0,
@@ -234,54 +287,112 @@ with tab2:
             )
         },
         hide_index=True,
-        # Disable editing the ID and Date Submitted columns.
-        disabled=["ID", "Date Submitted"]
      )
 with tab3:
     edited_df = st.data_editor(
-        filtered_df,
+        tab3_df,
         use_container_width=True,
         column_config={
-            "총점": st.column_config.ProgressColumn(
-                "총점",
+            "CJ제일제당": st.column_config.ProgressColumn(
                 format="%i",
                 min_value=0,
-                max_value=3000,
+                max_value=375,
             ),
-            "입실포인트": st.column_config.ProgressColumn(
-                "입실포인트",
-                help="체류시간에 따른 포인트입니다.",
+            "CJ대한통운": st.column_config.ProgressColumn(
                 format="%i",
                 min_value=0,
-                max_value=1260,
+                max_value=375,
             ),
-            "퀴즈포인트": st.column_config.ProgressColumn(
-                "퀴즈포인트",
-                help="클래스 퀴즈에 따른 포인트입니다.",
+            "CJ올리브영": st.column_config.ProgressColumn(
                 format="%i",
                 min_value=0,
-                max_value=300,
+                max_value=375,
             ),
-            "미션포인트": st.column_config.ProgressColumn(
-                "미션포인트",
-                help="디지털비전보드 포인트입니다.",
+            "CJ ENM 엔터": st.column_config.ProgressColumn(
                 format="%i",
                 min_value=0,
-                max_value=200,
+                max_value=375,
             ),
-            "대표작질문포인트": st.column_config.ProgressColumn(
-                "대표작질문포인트",
-                help="대표작질문포인트에 따른 포인트입니다.",
+            "CJ ENM 커머스": st.column_config.ProgressColumn(
                 format="%i",
                 min_value=0,
-                max_value=300,
+                max_value=375,
+            ),
+            "CJ 올리브네트웍스": st.column_config.ProgressColumn(
+                format="%i",
+                min_value=0,
+                max_value=375,
             ),
         },
         hide_index=True,
-        # Disable editing the ID and Date Submitted columns.
-        disabled=["ID", "Date Submitted"],
-    )
+     )
 
+with tab4:
+    edited_df = st.data_editor(
+        tab4_df,
+        use_container_width=True,
+        column_config={
+            "CJ제일제당": st.column_config.ProgressColumn(
+                format="%i",
+                min_value=0,
+                max_value=50,
+            ),
+            "CJ대한통운": st.column_config.ProgressColumn(
+                format="%i",
+                min_value=0,
+                max_value=50,
+            ),
+            "CJ올리브영": st.column_config.ProgressColumn(
+                format="%i",
+                min_value=0,
+                max_value=50,
+            ),
+            "CJ ENM 엔터": st.column_config.ProgressColumn(
+                format="%i",
+                min_value=0,
+                max_value=50,
+            ),
+            "CJ ENM 커머스": st.column_config.ProgressColumn(
+                format="%i",
+                min_value=0,
+                max_value=50,
+            ),
+            "CJ 올리브네트웍스": st.column_config.ProgressColumn(
+                format="%i",
+                min_value=0,
+                max_value=50,
+            ),
+        },
+        hide_index=True,
+     )
+with tab5:
+    edited_df = st.data_editor(
+        tab5_df,
+        use_container_width=True,
+        column_config={
+            "미션포인트": st.column_config.ProgressColumn(
+                format="%i",
+                min_value=0,
+                max_value=200,
+            )
+        },
+        hide_index=True,
+     )
+
+with tab6:
+    edited_df = st.data_editor(
+        tab6_df,
+        use_container_width=True,
+        column_config={
+            "대표작질문포인트": st.column_config.ProgressColumn(
+                format="%i",
+                min_value=0,
+                max_value=500,
+            )
+        },
+        hide_index=True,
+     )
+    
 def load_p(supabase):
     response = supabase.table("Entrance_Info").select("*").in_("enter_dvcd", [10,11,12]).execute()
 
