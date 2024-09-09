@@ -9,12 +9,7 @@ from supabase import create_client, Client
 st.set_page_config(
     page_title="ONLYONE FAIR Score Board",
     page_icon="🏆",  # This is an emoji shortcode. Could be a URL too.🥇🏆🎖️
-    layout="wide",
-    menu_items={
-        'Get Help': None,
-        'Report a bug': None,
-        'About': None
-})
+    layout="wide")
 
 hide_menu_style = """
         <style>
@@ -64,15 +59,15 @@ def load_data_s(supabase):
                         THEN A.SCORE ELSE 0 END) AS 입실포인트ONS,
                         SUM(CASE WHEN A.quiz_dvcd IN (3, 4) AND A.company_dvcd = 13 
                         THEN A.SCORE ELSE 0 END) AS 입실포인트CMS,
-                        SUM(CASE WHEN A.quiz_dvcd = 2 THEN A.SCORE ELSE 0 END) AS 퀴즈포인트,
-                        SUM(CASE WHEN A.quiz_dvcd = 2 AND A.company_dvcd = 5 THEN A.SCORE ELSE 0 END) AS 퀴즈포인트CJ,
-                        SUM(CASE WHEN A.quiz_dvcd = 2 AND A.company_dvcd = 6 THEN A.SCORE ELSE 0 END) AS 퀴즈포인트LOG,
-                        SUM(CASE WHEN A.quiz_dvcd = 2 AND A.company_dvcd = 7 THEN A.SCORE ELSE 0 END) AS 퀴즈포인트OY,
-                        SUM(CASE WHEN A.quiz_dvcd = 2 AND A.company_dvcd = 8 THEN A.SCORE ELSE 0 END) AS 퀴즈포인트ENM,
-                        SUM(CASE WHEN A.quiz_dvcd = 2 AND A.company_dvcd = 9 THEN A.SCORE ELSE 0 END) AS 퀴즈포인트ONS,
-                        SUM(CASE WHEN A.quiz_dvcd = 2 AND A.company_dvcd = 13 THEN A.SCORE ELSE 0 END) AS 퀴즈포인트CMS,
+                        SUM(CASE WHEN A.quiz_dvcd = 1 THEN A.SCORE ELSE 0 END) AS 퀴즈포인트,
+                        SUM(CASE WHEN A.quiz_dvcd = 1 AND A.company_dvcd = 5 THEN A.SCORE ELSE 0 END) AS 퀴즈포인트CJ,
+                        SUM(CASE WHEN A.quiz_dvcd = 1 AND A.company_dvcd = 6 THEN A.SCORE ELSE 0 END) AS 퀴즈포인트LOG,
+                        SUM(CASE WHEN A.quiz_dvcd = 1 AND A.company_dvcd = 7 THEN A.SCORE ELSE 0 END) AS 퀴즈포인트OY,
+                        SUM(CASE WHEN A.quiz_dvcd = 1 AND A.company_dvcd = 8 THEN A.SCORE ELSE 0 END) AS 퀴즈포인트ENM,
+                        SUM(CASE WHEN A.quiz_dvcd = 1 AND A.company_dvcd = 9 THEN A.SCORE ELSE 0 END) AS 퀴즈포인트ONS,
+                        SUM(CASE WHEN A.quiz_dvcd = 1 AND A.company_dvcd = 13 THEN A.SCORE ELSE 0 END) AS 퀴즈포인트CMS,
                         SUM(CASE WHEN A.quiz_dvcd = 14 THEN A.SCORE ELSE 0 END) AS 미션포인트,
-                        SUM(CASE WHEN A.quiz_dvcd = 5 THEN A.SCORE ELSE 0 END) AS 대표작질문포인트
+                        SUM(CASE WHEN A.quiz_dvcd = 2 THEN A.SCORE ELSE 0 END) AS 대표작질문포인트
                     FROM "Score_Info" A
                     GROUP BY A.id
                 )
@@ -166,7 +161,7 @@ def load_data_s(supabase):
 st.info(
     """
     실시간 포인트를 확인하시려면 화면을 새로고침하세요\n
-    실시간 포인트 보기는 11:30에 종료됩니다\n 
+    실시간 포인트 보기는 11:00에 종료됩니다\n 
     14:00에 진행되는 라디오 코너에서 순위별 시상식이 있습니다 😀 
     """
 )
@@ -262,7 +257,7 @@ with tab2:
                 help="대표작질문포인트에 따른 포인트입니다.",
                 format="%i",
                 min_value=0,
-                max_value=300,
+                max_value=900,
             )
         },
         hide_index=True,
@@ -366,7 +361,7 @@ with tab6:
             "대표작질문포인트": st.column_config.ProgressColumn(
                 format="%i",
                 min_value=0,
-                max_value=500,
+                max_value=900,
             )
         },
         hide_index=True,
