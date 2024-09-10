@@ -229,7 +229,7 @@ with tab1:
             ),
         },
         hide_index=True,
-        editable=False
+        disabled=tab1_df.columns,
      )
 with tab2:
      edited_df = st.data_editor(
@@ -262,7 +262,7 @@ with tab2:
             )
         },
         hide_index=True,
-        editable=False
+        disabled=tab2_df.columns,
      )
 with tab3:
     edited_df = st.data_editor(
@@ -301,7 +301,7 @@ with tab3:
             ),
         },
         hide_index=True,
-        editable=False
+        disabled=tab3_df.columns,
      )
 
 with tab4:
@@ -341,7 +341,7 @@ with tab4:
             ),
         },
         hide_index=True,
-        editable=False
+        disabled=tab4_df.columns,
      )
 with tab5:
     edited_df = st.data_editor(
@@ -355,7 +355,7 @@ with tab5:
             )
         },
         hide_index=True,
-        editable=False
+        disabled=tab5_df.columns,
      )
 
 with tab6:
@@ -370,7 +370,7 @@ with tab6:
             )
         },
         hide_index=True,
-        editable=False
+        disabled=tab6_df.columns,
      )
     
 def load_p(supabase):
