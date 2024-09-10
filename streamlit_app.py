@@ -179,7 +179,7 @@ supabase = connect_supabase()
 # Load data from database
 df_s = load_data_s(supabase)
 
-st.markdown("<h3><br>포인트 확인하기</h3>", unsafe_allow_html=True)
+st.markdown("<h3><br>실시간 포인트 확인</h3>", unsafe_allow_html=True)
 st.markdown("<hr>", unsafe_allow_html=True)
 
 with st.popover("이름으로 검색하기 👋"):
@@ -404,7 +404,7 @@ def load_p(supabase):
 plot_data = load_p(supabase)
 
 st.markdown("<hr>", unsafe_allow_html=True)
-st.markdown("<h3><br>클래스별 입장 인원</h3>", unsafe_allow_html=True)
+st.markdown("<h3><br>실시간 클래스 인원</h3>", unsafe_allow_html=True)
 st.markdown("<hr>", unsafe_allow_html=True)
 
 col1, col2, col3 = st.columns(3)
