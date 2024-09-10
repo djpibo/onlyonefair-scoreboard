@@ -151,6 +151,7 @@ def load_data_s(supabase):
 """
 """
 """
+st.balloons()
 # st.markdown("""
 # <div style="font-family: 'CJFont_tb'; font-size: 24px;">📊 ONLYONE FAIR Scoreboard <br></div>
 # """, unsafe_allow_html=True)
@@ -160,16 +161,15 @@ def load_data_s(supabase):
 
 st.info(
     """
-    실시간 포인트를 확인하시려면 화면을 새로고침하세요\n
-    실시간 포인트 보기는 11:00에 종료됩니다\n 
+    실시간 포인트를 확인하시려면 화면을 새로고침해주세요 🔄 \n
     14:00에 진행되는 라디오 코너에서 순위별 시상식이 있습니다 😀 
     """
 )
-st.balloons()
 
 # st.info(
 #     """
-#     😀
+#     실시간 포인트 보기는 11:00에 종료됐습니다.
+#     14:00에 진행되는 라디오 코너에서 순위별 시상식이 있습니다 😀 
 #     """
 # )
 
@@ -208,9 +208,9 @@ tab4_df = _tab4_df.rename(columns={
     '퀴즈포인트cj': 'CJ제일제당',
     '퀴즈포인트log': 'CJ대한통운',
     '퀴즈포인트oy': 'CJ올리브영',
-    '퀴즈포인트enm': 'CJ ENM 엔터',
+    '퀴즈포인트enm': 'CJ ENM 엔터부문',
     '퀴즈포인트ons': 'CJ 올리브네트웍스',
-    '퀴즈포인트cms': 'CJ ENM 커머스',
+    '퀴즈포인트cms': 'CJ ENM 커머스부문',
 })
 tab5_df = filtered_df[['이름', '소속사', '미션포인트']]
 tab6_df = filtered_df[['이름', '소속사', '대표작질문포인트']]
@@ -229,6 +229,7 @@ with tab1:
             ),
         },
         hide_index=True,
+        editable=False
      )
 with tab2:
      edited_df = st.data_editor(
@@ -261,6 +262,7 @@ with tab2:
             )
         },
         hide_index=True,
+        editable=False
      )
 with tab3:
     edited_df = st.data_editor(
@@ -299,6 +301,7 @@ with tab3:
             ),
         },
         hide_index=True,
+        editable=False
      )
 
 with tab4:
@@ -338,6 +341,7 @@ with tab4:
             ),
         },
         hide_index=True,
+        editable=False
      )
 with tab5:
     edited_df = st.data_editor(
@@ -351,6 +355,7 @@ with tab5:
             )
         },
         hide_index=True,
+        editable=False
      )
 
 with tab6:
@@ -365,6 +370,7 @@ with tab6:
             )
         },
         hide_index=True,
+        editable=False
      )
     
 def load_p(supabase):
